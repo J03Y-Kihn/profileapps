@@ -1,8 +1,7 @@
-# React + Vite
+# D&D Assisting Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository is used to adapt my DnD_Helper_Website into a React and AWS Amplify project
 
-Currently, two official plugins are available:
+Using the HTML as a base, I am learning and developing it using React!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You can travel to the link to view the current project. After placing your character stats into each of the input boxes, you can generate the order of synergistic Dungeons and Dragons classes that the AI would recommend you.
