@@ -1,20 +1,13 @@
 import { useState } from 'react'
+import { classNames } from "./utils/classes"
+import { statNames } from "./utils/stats"
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-//import Optimizer from './Optimizer.jsx'
 
-
-function Optimizer(){
-
-  console.log("test")
-  return (
-      <>
-      </>
-  )
-}
 
 function App() {
+  //eventually turn this into an array of the stats rather than 6 copies of the same variables and functions
   const [inputStrength, setStrengthValue] = useState('');
   const [inputDexterity, setDexterityValue] = useState('');
   const [inputConstitution, setConstitutionValue] = useState('');
@@ -39,6 +32,27 @@ function App() {
   const [results, setResultValue] = useState('');
   const resultsChange = (e) => {setResultValue(e);};
 
+  const [Stats, setStatsValue] = useState(statNames);
+  
+  const StatsChange = (event, name) => {
+    const stat = event.target.value;
+    setStatsValue( prevStats =>
+      prevStats.map(Stats => 
+        Stats.name === name ? {...Stats, stat} : Stats
+      )
+    );
+  };
+
+  const [ignoreClasses, setIgnoreClassesValue] = useState(classNames);
+
+  const ignoreClassesChange = (event, name) => {
+    setIgnoreClassesValue( prevIgnoring =>
+      prevIgnoring.map(ignoreClasses =>
+        ignoreClasses.name === name ? {...ignoreClasses,  ignore: !ignoreClasses.ignore} : ignoreClasses
+      )
+    );
+  };
+
   let numbs = 0;
 
   const numbCheck = (stat) => {
@@ -50,97 +64,67 @@ function App() {
     }
   };
 
-  const shoot = (str, dex, con, int, wis, cha) => {
-    numbs = parseInt(str) + parseInt(dex)
-    //converting string to INT for calculations
-    let STR = parseInt(str)
-    let DEX = parseInt(dex)
-    let CON = parseInt(con)
-    let INT = parseInt(int)
-    let WIS = parseInt(wis)
-    let CHA = parseInt(cha)
+  const calculateClass = (currentStats, currentIgnoredClasses) => {
+    let output = ""
+    let valid = true
 
-    if(numbCheck(STR) && numbCheck(DEX) && numbCheck(CON) && numbCheck(INT) && numbCheck(WIS) && numbCheck(CHA)){
-      //compute values for the classes
-      let ARTIFICER = [(INT/10*2+DEX/10*1.5)/2 , "Artificer"]
-      let BARBARIAN = [(STR/10*2+CON/10*1.5)/2, "Barbarian"]
-      let BARD = [(CHA/10*2+DEX/10*1.5)/2, "Bard"]
-      let BLOODHUNTER = [(DEX/10*2+CON/10*1.5)/2, "Blood Hunter"]
-      let CLERIC = [(WIS/10*2+CON/10*1.5)/2, "Cleric"]
-      let DRUID = [(WIS/10*2+CON/10*1.5)/2, "Druid"]
-      let FIGHTER = [(STR/10*2+DEX/10*1.5)/2, "Fighter"]
-      let MONK = [(DEX/10*2+WIS/10*1.5)/2, "Monk"]
-      let PALADIN = [(CHA/10*2+CON/10*1.5)/2, "Paladin"]
-      let RANGER = [(DEX/10*2+WIS/10*1.5)/2, "Ranger"]
-      let ROGUE = [(DEX/10*2+CHA/10*1.5)/2, "Rogue"]
-      let SORCERER = [(CHA/10*2+CON/10*1.5)/2, "Sorcerer"]
-      let WARLOCK = [(CHA/10*2+CON/10*1.5)/2, "Warlock"]
-      let WIZARD = [(INT/10*2+DEX/10*1.5)/2, "Wizard"]
+    //make sure all stats are valid
+    for (let classIndex =0; classIndex< currentStats.length; classIndex++){
+      if(parseInt(currentStats[classIndex].stat) > 20 || parseInt(currentStats[classIndex].stat) < 1){
+        output += `${currentStats[classIndex].name} is invalid!!! \n`
+        valid = false
+      }
+    }
 
-      //add classes to the list if they are not ignored
-      var v = []
-          v.push(ARTIFICER)
-          v.push(BARBARIAN)
-          v.push(BARD)
-          v.push(BLOODHUNTER)
-          v.push(CLERIC)
-          v.push(DRUID)
-          v.push(FIGHTER)
-          v.push(MONK)
-          v.push(PALADIN)
-          v.push(RANGER)
-          v.push(ROGUE)
-          v.push(SORCERER)
-          v.push(WARLOCK)
-          v.push(WIZARD)
+    if(valid){
+      //initialize array to hold values
+      var outputRecommendation = []
 
-      v.sort(function(a,b){return b[0] - a[0]})
+      //loop through all classes to see which are being ignored, if any
+      for (let classIndex =0; classIndex< currentIgnoredClasses.length; classIndex++){
+        //if the class is not ignored determine it's value
+        if(!currentIgnoredClasses[classIndex].ignore){
+          let stat1 = 0
+          let stat2 = 0
+          for(let statIndex =0; statIndex< currentStats.length; statIndex++){
+            if(currentIgnoredClasses[classIndex].stat1 === currentStats[statIndex].name){
+              stat1 = currentStats[statIndex].stat
+            }
+            else if(currentIgnoredClasses[classIndex].stat2 === currentStats[statIndex].name){
+              stat2 = currentStats[statIndex].stat
+            }
+          }
 
-      let output = ""
-      for(var i=0; i<v.length;i++){
-        output += v[i][1] + " with a score of " + v[i][0] + "\n\n"
+          //do the calculation here and then store the (value, class_name) pairing
+          stat1 = stat1/10*2
+          stat2 = stat2/10*1.5
+
+          outputRecommendation.push( [(stat1+stat2)/2, currentIgnoredClasses[classIndex].name] )
+        }
+      }
+
+      //sort the classes
+      outputRecommendation.sort(function(a,b){return b[0] - a[0]})
+
+      for(let i=0; i<outputRecommendation.length; i++){
+        output += `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
       }
       
-      visibleChange(true)
-      resultsChange(output)
+      //show the output
+      console.log(outputRecommendation)
     }
     else{
-      visibleChange(true)
-      resultsChange("Only enter values between 0-20")
+      output += "Make sure your stats are between 1-20!"
     }
+    if(!isVisible)
+      visibleChange(true)
+    resultsChange(output)
   };
+
+
+
   return (
-    <>
-      {/*<div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-
-      <input type="text" id="myInput" name="myInput"></input>
-
-      <div className="Test">
-        <p>
-          test
-        </p>
-        <output value={myInput}/>
-      </div>*/}
-    
+    <>    
   <title>Class Recommendation Tool</title>
   <h1 className="h1">D&D Class Recommendation Tool!!</h1>
   <p>
@@ -149,28 +133,34 @@ function App() {
   </p>
   <br />
   <br />
-
-        {// need to add pattern detection later
-        }
   <div>
-    Strength:  <input type= "number" value={inputStrength} onChange={strengthChange} min="1" max="20"/><br></br>
-    Dexterity:  <input type= "number" value={inputDexterity} onChange={dexterityChange} min="1" max="20"/><br></br>
-    Constitution:  <input type= "number" value={inputConstitution} onChange={constitutionChange} min="1" max="20"/><br></br>
-    Intelligence:  <input type= "number" value={inputIntelligence} onChange={intelligenceChange} min="1" max="20"/><br></br>
-    Wisdom:  <input type= "number" value={inputWisdom} onChange={wisdomChange} min="1" max="20"/><br></br>
-    Charisma:  <input type= "number" value={inputCharisma} onChange={charismaChange} min="1" max="20"/><br></br>
-
-    {/* add the check boxes in later
-    <input type="checkbox" value={boolStr} onChange={testing}/>*/}
-  </div>
-
-  {/*Button That begins the calculation */
-  }
-  <form>
-    <button type="button" onClick= {(event) => shoot(inputStrength, inputDexterity, inputConstitution, inputIntelligence, inputWisdom, inputCharisma)}>
+    <ul className= "stats-list">
+      {Stats.map(({name, stat}, index) =>{
+        return (
+          <li key={index}>
+            <div>
+            {name}
+            <input type="number" value={Stats[index].stat} onChange={(event) => StatsChange(event, Stats[index].name)} min="1" max="20"/>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+    <ul className= "ignore-list">
+      {ignoreClasses.map(({name, ignore}, index) =>{
+        return (
+          <li key={index}>
+            <input type="checkbox" checked={ignoreClasses[index].ignore} onChange={(event) => ignoreClassesChange(event, ignoreClasses[index].name)}/>
+            {name}
+          </li>
+        );
+      })}
+      <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)}>
       Submit
-    </button>
-  </form>
+      </button>
+    </ul>
+    
+  </div>
 
   {/* Outputs results after the button is Clicked */}
   <div>
@@ -187,10 +177,6 @@ function App() {
     <br></br>
     <img src="https://cdn.arstechnica.net/wp-content/uploads/2016/02/DDmonstermanual_th_0.jpg" alt="D&D Image"/>
   </div>
-
-  {/*
-  <noscript>Sorry, your browser does not support Javascript!</noscript>
-  {/*<a href="homepage.html"> Back to Home Page</a>*/}
 </>
 
   )

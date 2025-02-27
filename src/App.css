@@ -40,3 +40,14 @@
 .read-the-docs {
   color: #888;
 }
+/*to remove bullet points next to our list*/
+.stats-list {
+  list-style: none;
+}
+
+.ignore-list {
+  list-style: none;
+}
+div{
+  white-space: pre-wrap;
+}
