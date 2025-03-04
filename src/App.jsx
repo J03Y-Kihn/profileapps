@@ -7,30 +7,8 @@ import './App.css'
 
 
 function App() {
-  //eventually turn this into an array of the stats rather than 6 copies of the same variables and functions
-  const [inputStrength, setStrengthValue] = useState('');
-  const [inputDexterity, setDexterityValue] = useState('');
-  const [inputConstitution, setConstitutionValue] = useState('');
-  const [inputIntelligence, setIntelligenceValue] = useState('');
-  const [inputWisdom, setWisdomValue] = useState('');
-  const [inputCharisma, setCharismaValue] = useState('');
-
   const [isVisible, setVisible] = useState(false);
-
-  const strengthChange = (event) =>{
-    setStrengthValue(event.target.value);
-  };
-  const dexterityChange = (event) =>{setDexterityValue(event.target.value);};
-  const constitutionChange = (event) =>{setConstitutionValue(event.target.value);};
-  const intelligenceChange = (event) =>{setIntelligenceValue(event.target.value);};
-  const wisdomChange = (event) =>{setWisdomValue(event.target.value);};
-  const charismaChange = (event) =>{setCharismaValue(event.target.value);};
-
   const visibleChange = (val) =>{setVisible(val)};
-  const boolStr = false;
-
-  const [results, setResultValue] = useState('');
-  const resultsChange = (e) => {setResultValue(e);};
 
   const [Stats, setStatsValue] = useState(statNames);
   
@@ -53,16 +31,23 @@ function App() {
     );
   };
 
-  let numbs = 0;
+  const [firstPlace, setFirstPlace] = useState('');
+  const FirstPlaceChange = (e) => {setFirstPlace(e);};
+  const [secondPlace, setSecondPlace] = useState('');
+  const SecondPlaceChange = (e) => {setSecondPlace(e);};
+  const [thirdPlace, setThirdPlace] = useState('');
+  const ThirdPlaceChange = (e) => {setThirdPlace(e);};
+  const [remainingPlaces, setRemainingPlaces] = useState('');
+  const RemainingPlacesChange = (e) => {setRemainingPlaces(e);};
 
-  const numbCheck = (stat) => {
-    if(stat > 0 && stat <=20 ){
-      return true
-    }
-    else{
-      return false
-    }
-  };
+  const [secondPlaceisVisible, setSecondPlaceVisible] = useState(false);
+  const secondVisibleChange = (val) =>{setSecondPlaceVisible(val)};
+  const [firstPlaceisVisible, setFirstPlaceVisible] = useState(false);
+  const firstVisibleChange = (val) =>{setFirstPlaceVisible(val)};
+  const [thirdPlaceisVisible, setThirdVisible] = useState(false);
+  const thirdVisibleChange = (val) =>{setThirdVisible(val)};
+  const [remainingPlacesisVisible, setRemainingVisible] = useState(false);
+  const remainingVisibleChange = (val) =>{setRemainingVisible(val)};
 
   const calculateClass = (currentStats, currentIgnoredClasses) => {
     let output = ""
@@ -109,7 +94,60 @@ function App() {
       for(let i=0; i<outputRecommendation.length; i++){
         output += `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
       }
+
+
+      let first = 0;
+      let second = 0;
+      let third = 0;
+      let firstOutput, secondOutput, thirdOutput, remainingOutput = "";
+      let numbTied = 0;
+      for(let i=0; i<outputRecommendation.length; i++){
+        if(first === 0){
+          firstOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]}`
+          first = outputRecommendation[i][0]
+        }
+        else if(first === outputRecommendation[i][0]){
+          firstOutput += ` and ${outputRecommendation[i][1]}`
+          numbTied += 1;
+        }
+        else if (second === 0 && numbTied === 0){
+          secondOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]}`
+          second = outputRecommendation[i][0]
+        }
+        else if(second === outputRecommendation[i][0]){
+          secondOutput += ` or ${outputRecommendation[i][1]}`
+          numbTied += 1;
+        }
+        else if(third === 0 && numbTied < 2){
+          thirdOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]}`
+          third = outputRecommendation[i][0]
+        }
+        else if(third === outputRecommendation[i][0]){
+          thirdOutput += ` or ${outputRecommendation[i][1]}`
+          numbTied += 1;
+        }
+        else{
+          let currValue = outputRecommendation[i][0];
+          let position = i+1;
+          do{
+          remainingOutput += `${position}. ${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
+          i++;
+          }while(i < outputRecommendation.length && currValue == outputRecommendation[i][0])
+          i--;
+        }
+      }
+
       
+      FirstPlaceChange(firstOutput)
+      SecondPlaceChange(secondOutput)
+      ThirdPlaceChange(thirdOutput)
+      RemainingPlacesChange(remainingOutput)
+      
+      secondVisibleChange(secondOutput === "" ? false: true)
+      firstVisibleChange(firstOutput === "" ? false: true)
+      thirdVisibleChange(thirdOutput === "" ? false: true)
+      remainingVisibleChange(remainingOutput === "" ? false: true)
+
       //show the output
       console.log(outputRecommendation)
     }
@@ -118,7 +156,7 @@ function App() {
     }
     if(!isVisible)
       visibleChange(true)
-    resultsChange(output)
+    console.log(output)
   };
 
 
@@ -173,7 +211,26 @@ function App() {
     <br />
     Happy Character Creation!
   </p>}
-    {isVisible && results}
+  <div className='Podium'>
+    <div className='place second'>
+      <h2>Second Place</h2>
+      {secondPlaceisVisible && secondPlace}
+    </div>
+    <div className='place first'>
+      <h2>First Place</h2>
+      {firstPlaceisVisible && firstPlace}
+    </div>
+    <div className='place third'>
+      <h2>Third Place</h2>
+      {thirdPlaceisVisible && thirdPlace}
+    </div>
+    <br></br>
+  </div>
+  <br></br><br></br>
+  <div className='remaining'>
+      <h2>Remaining Results</h2>
+      {remainingPlacesisVisible && remainingPlaces}
+  </div>
     <br></br>
     <img src="https://cdn.arstechnica.net/wp-content/uploads/2016/02/DDmonstermanual_th_0.jpg" alt="D&D Image"/>
   </div>

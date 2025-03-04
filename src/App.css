@@ -51,3 +51,10 @@
 div{
   white-space: pre-wrap;
 }
+
+.place {
+  float: left;
+  margin: -10px;
+  width: 35%;
+  text-align: left;
+}
