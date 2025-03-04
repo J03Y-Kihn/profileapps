@@ -84,7 +84,8 @@ function App() {
           stat1 = stat1/10*2
           stat2 = stat2/10*1.5
 
-          outputRecommendation.push( [(stat1+stat2)/2, currentIgnoredClasses[classIndex].name] )
+          let tempResult = (stat1+stat2)/2
+          outputRecommendation.push( [parseFloat(tempResult.toFixed(3)), currentIgnoredClasses[classIndex].name] )
         }
       }
 
@@ -103,7 +104,7 @@ function App() {
       let numbTied = 0;
       for(let i=0; i<outputRecommendation.length; i++){
         if(first === 0){
-          firstOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]}`
+          firstOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
           first = outputRecommendation[i][0]
         }
         else if(first === outputRecommendation[i][0]){
@@ -111,19 +112,19 @@ function App() {
           numbTied += 1;
         }
         else if (second === 0 && numbTied === 0){
-          secondOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]}`
+          secondOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
           second = outputRecommendation[i][0]
         }
         else if(second === outputRecommendation[i][0]){
-          secondOutput += ` or ${outputRecommendation[i][1]}`
+          secondOutput += ` and ${outputRecommendation[i][1]}`
           numbTied += 1;
         }
         else if(third === 0 && numbTied < 2){
-          thirdOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]}`
+          thirdOutput = `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
           third = outputRecommendation[i][0]
         }
         else if(third === outputRecommendation[i][0]){
-          thirdOutput += ` or ${outputRecommendation[i][1]}`
+          thirdOutput += ` and ${outputRecommendation[i][1]}`
           numbTied += 1;
         }
         else{
