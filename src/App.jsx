@@ -108,7 +108,7 @@ function App() {
           first = outputRecommendation[i][0]
         }
         else if(first === outputRecommendation[i][0]){
-          firstOutput += ` and ${outputRecommendation[i][1]}`
+          firstOutput += ` tied with ${outputRecommendation[i][1]}`
           numbTied += 1;
         }
         else if (second === 0 && numbTied === 0){
@@ -116,7 +116,7 @@ function App() {
           second = outputRecommendation[i][0]
         }
         else if(second === outputRecommendation[i][0]){
-          secondOutput += ` and ${outputRecommendation[i][1]}`
+          secondOutput += ` tied with ${outputRecommendation[i][1]}`
           numbTied += 1;
         }
         else if(third === 0 && numbTied < 2){
@@ -124,14 +124,14 @@ function App() {
           third = outputRecommendation[i][0]
         }
         else if(third === outputRecommendation[i][0]){
-          thirdOutput += ` and ${outputRecommendation[i][1]}`
+          thirdOutput += ` tied with ${outputRecommendation[i][1]}`
           numbTied += 1;
         }
         else{
           let currValue = outputRecommendation[i][0];
           let position = i+1;
           do{
-          remainingOutput += `${position}. ${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
+          remainingOutput += `${position}th place: ${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
           i++;
           }while(i < outputRecommendation.length && currValue == outputRecommendation[i][0])
           i--;
@@ -165,13 +165,11 @@ function App() {
   return (
     <>    
   <title>Class Recommendation Tool</title>
-  <h1 className="h1">D&D Class Recommendation Tool!!</h1>
+  <h1 className="h1">D&D Class Recommendation Tool</h1>
   <p>
-    All you have to do is input your six stats and choose any classes you do not
+    Input your six stats and choose any classes you do not
     want factored into the calculation. Then watch the magic unfold!
   </p>
-  <br />
-  <br />
   <div>
     <ul className= "stats-list">
       {Stats.map(({name, stat}, index) =>{
@@ -190,15 +188,15 @@ function App() {
         return (
           <li key={index}>
             <input type="checkbox" checked={ignoreClasses[index].ignore} onChange={(event) => ignoreClassesChange(event, ignoreClasses[index].name)}/>
-            {name}
+            {name + "   "}
+            <img src= {`./${ignoreClasses[index].name}.jpeg`} width={25} height={25}/>
           </li>
         );
       })}
-      <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)}>
+    </ul>
+    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)}>
       Submit
       </button>
-    </ul>
-    
   </div>
 
   {/* Outputs results after the button is Clicked */}
@@ -233,7 +231,7 @@ function App() {
       {remainingPlacesisVisible && remainingPlaces}
   </div>
     <br></br>
-    <img src="https://cdn.arstechnica.net/wp-content/uploads/2016/02/DDmonstermanual_th_0.jpg" alt="D&D Image"/>
+    {/*<img src="https://cdn.arstechnica.net/wp-content/uploads/2016/02/DDmonstermanual_th_0.jpg" alt="D&D Image"/>*/}
   </div>
 </>
 
