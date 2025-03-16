@@ -56,7 +56,8 @@ div{
 /* formatting of result placements*/
 .place {
   float: left;
-  margin: -10px;
-  width: 35%;
+  margin: 0px;
+  width: 25%;
   text-align: left;
+  height: 300px;
 }

@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { classNames } from "./utils/classes"
 import { statNames } from "./utils/stats"
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 
@@ -211,27 +209,29 @@ function App() {
     Happy Character Creation!
   </p>}
   <div className='Podium'>
-    <div className='place second'>
-      <h2>Second Place</h2>
-      {secondPlaceisVisible && secondPlace}
-    </div>
     <div className='place first'>
       <h2>First Place</h2>
       {firstPlaceisVisible && firstPlace}
     </div>
+    <div className='place second'>
+      <h2>Second Place</h2>
+      {secondPlaceisVisible && secondPlace}
+    </div>
+    
     <div className='place third'>
       <h2>Third Place</h2>
       {thirdPlaceisVisible && thirdPlace}
     </div>
-    <br></br>
-  </div>
-  <br></br><br></br>
-  <div className='remaining'>
+    <div className='place remaining'>
       <h2>Remaining Results</h2>
       {remainingPlacesisVisible && remainingPlaces}
-  </div>
+    </div>
     <br></br>
-    {/*<img src="https://cdn.arstechnica.net/wp-content/uploads/2016/02/DDmonstermanual_th_0.jpg" alt="D&D Image"/>*/}
+  </div>
+  </div>
+  <div>
+  {<a target='_blank' href='https://linkedin.com/in/josephkihn' rel="noopener noreferrer">My LinkedIn</a>}<br></br>
+  {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
   </div>
 </>
 
