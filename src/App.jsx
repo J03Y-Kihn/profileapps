@@ -165,8 +165,8 @@ function App() {
   <title>Class Recommendation Tool</title>
   <h1 className="h1">D&D Class Recommendation Tool</h1>
   <p>
-    Input your six stats and choose any classes you do not
-    want factored into the calculation. Then watch the magic unfold!
+    Input your six stats (between 0-20 for each) and choose any classes you do not
+    want factored into the calculation.
   </p>
   <div>
     <ul className= "stats-list">
@@ -201,12 +201,8 @@ function App() {
   <div>
     {isVisible && <p>
     The range of scores is from 0-3.5. The Highest valued classes are the
-    ones we recommend you build!
+    ones we recommend you build.
     <br />
-    If you do not like the recommendation, try adjusting where you put stats or
-    ignoring a class!
-    <br />
-    Happy Character Creation!
   </p>}
   <div className='Podium'>
     <div className='place first'>
@@ -230,6 +226,7 @@ function App() {
   </div>
   </div>
   <div>
+    <p>Built by Joseph Kihn using JavaScript, ReactJS, HTML, and CSS. It is hosted used AWS Amplify with all source code saved on GitHub. </p>
   {<a target='_blank' href='https://linkedin.com/in/josephkihn' rel="noopener noreferrer">My LinkedIn</a>}<br></br>
   {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
   </div>
