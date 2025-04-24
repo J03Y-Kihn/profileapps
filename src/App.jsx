@@ -5,9 +5,49 @@ import './App.css'
 
 
 function App() {
+  const [statRecIsVisible, setStatRecVisible] = useState(false);
+  const statRecVisibleChange = (val) =>{setStatRecVisible(val)};
+
+  const [questionnaireIsVisible, setQuestionnaireVisible] = useState(false);
+  const questionnaireVisibleChange = (val) =>{setQuestionnaireVisible(val)};
+
+  const questionnaireChange = () =>{
+
+    questionnaireVisibleChange(true)
+    statRecVisibleChange(false)
+  };
+
+  const statRecChange = () =>{
+    questionnaireVisibleChange(false)
+    statRecVisibleChange(true)
+  };
+
+  return (
+    <>    
+  <h1 className="h1">D&D Class Recommendation Tool</h1>
+
+  <button type="button" onClick= {(event) => questionnaireChange()}>Questionnaire</button>
+  <button type="button" onClick= {(event) => statRecChange()}>Stat Rec</button>
+  {questionnaireIsVisible && <QuestionnaireTab/>}  
+  
+  {statRecIsVisible && <StatTab/>}
+  <div>
+    <p>Built by Joseph Kihn using JavaScript, ReactJS, HTML, and CSS. It is hosted used AWS Amplify with all source code saved on GitHub. </p>
+  {<a target='_blank' href='https://linkedin.com/in/josephkihn' rel="noopener noreferrer">My LinkedIn</a>}<br></br>
+  {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
+  </div>
+</>
+
+  )
+}
+
+
+function StatTab(){
+  //variable that will be true when there are results to output
   const [isVisible, setVisible] = useState(false);
   const visibleChange = (val) =>{setVisible(val)};
 
+  //variable that displays and holds all character stat information (Strength, Dexterity, etc.)
   const [Stats, setStatsValue] = useState(statNames);
   
   const StatsChange = (event, name) => {
@@ -19,6 +59,7 @@ function App() {
     );
   };
 
+  //variable that displays and holds all information regarding classes that the user may want to ignore for the recommendation
   const [ignoreClasses, setIgnoreClassesValue] = useState(classNames);
 
   const ignoreClassesChange = (event, name) => {
@@ -29,6 +70,7 @@ function App() {
     );
   };
 
+  //Variables that will be used to display the output
   const [firstPlace, setFirstPlace] = useState('');
   const FirstPlaceChange = (e) => {setFirstPlace(e);};
   const [secondPlace, setSecondPlace] = useState('');
@@ -47,6 +89,7 @@ function App() {
   const [remainingPlacesisVisible, setRemainingVisible] = useState(false);
   const remainingVisibleChange = (val) =>{setRemainingVisible(val)};
 
+  //function that calculates which class would be best with the input stats without factoring in any ignored classes
   const calculateClass = (currentStats, currentIgnoredClasses) => {
     let output = ""
     let valid = true
@@ -94,7 +137,7 @@ function App() {
         output += `${outputRecommendation[i][1]} with a score of ${outputRecommendation[i][0]} \n`
       }
 
-
+      //format the output
       let first = 0;
       let second = 0;
       let third = 0;
@@ -136,7 +179,7 @@ function App() {
         }
       }
 
-      
+      //send the changes for the output to their display variables
       FirstPlaceChange(firstOutput)
       SecondPlaceChange(secondOutput)
       ThirdPlaceChange(thirdOutput)
@@ -150,6 +193,7 @@ function App() {
       //show the output
       console.log(outputRecommendation)
     }
+    //outputs are not valid
     else{
       output += "Make sure your stats are between 1-20!"
     }
@@ -157,13 +201,8 @@ function App() {
       visibleChange(true)
     console.log(output)
   };
-
-
-
-  return (
-    <>    
-  <title>Class Recommendation Tool</title>
-  <h1 className="h1">D&D Class Recommendation Tool</h1>
+  return(
+  <>
   <p>
     Input your six stats (between 0-20 for each) and choose any classes you do not
     want factored into the calculation.
@@ -192,47 +231,45 @@ function App() {
         );
       })}
     </ul>
-    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)}>
-      Submit
-      </button>
+    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)} class="stat-submit">  Submit  </button>
   </div>
-
-  {/* Outputs results after the button is Clicked */}
-  <div>
-    {isVisible && <p>
-    The range of scores is from 0-3.5. The Highest valued classes are the
-    ones we recommend you build.
-    <br />
-  </p>}
-  <div className='Podium'>
-    <div className='place first'>
-      <h2>First Place</h2>
-      {firstPlaceisVisible && firstPlace}
+  {/* Outputs results after the submit button is Clicked */}
+  {<div>
+      {isVisible && <p>
+      The range of scores is from 0-3.5. The Highest valued classes are the
+      ones we recommend you build.
+      <br />
+    </p>}
+    <div className='Podium'>
+      <div className='place first'>
+        <h2>First Place</h2>
+        {firstPlaceisVisible && firstPlace}
+      </div>
+      <div className='place second'>
+        <h2>Second Place</h2>
+        {secondPlaceisVisible && secondPlace}
+      </div>
+      
+      <div className='place third'>
+        <h2>Third Place</h2>
+        {thirdPlaceisVisible && thirdPlace}
+      </div>
+      <div className='place remaining'>
+        <h2>Remaining Results</h2>
+        {remainingPlacesisVisible && remainingPlaces}
+      </div>
+      <br></br>
     </div>
-    <div className='place second'>
-      <h2>Second Place</h2>
-      {secondPlaceisVisible && secondPlace}
-    </div>
-    
-    <div className='place third'>
-      <h2>Third Place</h2>
-      {thirdPlaceisVisible && thirdPlace}
-    </div>
-    <div className='place remaining'>
-      <h2>Remaining Results</h2>
-      {remainingPlacesisVisible && remainingPlaces}
-    </div>
-    <br></br>
-  </div>
-  </div>
-  <div>
-    <p>Built by Joseph Kihn using JavaScript, ReactJS, HTML, and CSS. It is hosted used AWS Amplify with all source code saved on GitHub. </p>
-  {<a target='_blank' href='https://linkedin.com/in/josephkihn' rel="noopener noreferrer">My LinkedIn</a>}<br></br>
-  {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
-  </div>
-</>
-
+  </div>}
+  </>
   )
 }
 
+function QuestionnaireTab(){
+  return(
+  <>
+    <p>Here it is!!!</p>
+  </>
+  )
+}
 export default App

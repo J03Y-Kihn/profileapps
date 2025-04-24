@@ -61,3 +61,8 @@ div{
   text-align: left;
   height: 300px;
 }
+
+.stat-submit{
+  border: 2px solid black;
+  border-color: black;
+}
