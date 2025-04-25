@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { classNames } from "./utils/classes"
 import { statNames } from "./utils/stats"
+import { questionNames } from "./utils/questionnaire"
 import './App.css'
 
 
@@ -29,7 +30,6 @@ function App() {
   <button type="button" onClick= {(event) => questionnaireChange()}>Questionnaire</button>
   <button type="button" onClick= {(event) => statRecChange()}>Stat Rec</button>
   {questionnaireIsVisible && <QuestionnaireTab/>}  
-  
   {statRecIsVisible && <StatTab/>}
   <div>
     <p>Built by Joseph Kihn using JavaScript, ReactJS, HTML, and CSS. It is hosted used AWS Amplify with all source code saved on GitHub. </p>
@@ -266,9 +266,69 @@ function StatTab(){
 }
 
 function QuestionnaireTab(){
+  //variable that displays and holds all character stat information (Strength, Dexterity, etc.)
+  const [Questions, setQuestionsValue] = useState(questionNames);
+
+  const [result, setResultValue] = useState([0,0,0])
+  const logResult = (questionChoice, questionIndex) => {
+    console.log(questionChoice)
+    console.log(questionIndex)
+
+    const nextResult = result.map((choice, i) => {
+      if(i === questionIndex){
+        return questionChoice;
+      }
+      else{
+        return choice;
+      }
+    });
+    setResultValue(nextResult)
+    
+  };
+
+  const calculateClass = () => {
+
+    //not saving correctly
+    console.log(result)
+
+
+    //Calculate the class
+
+    for(let counter =0; counter < classNames.length; counter++){
+      console.log(classNames[counter].bestfit);
+      if(classNames[counter].bestfit == result){
+        console.log("THIS IS THE BEST")
+      }
+    }
+
+  };
+
+
   return(
   <>
-    <p>Here it is!!!</p>
+    <p>Please complete the following questionnaire to determine which class is the best for you!</p>
+
+    {
+    <div>
+    <ul className= "stats-list">
+      {Questions.map(({question, answers, qIndex}, index) =>{
+        return (
+          <li key={index}>
+            <div>
+            {question}
+            <br></br>
+            {answers[0] && <button type="button" onClick= {(event) => logResult(event, answers[0], qIndex)}> {answers[0]}</button>}
+            {answers[1] && <button type="button" onClick= {(event) => logResult(event, answers[1], qIndex)}> {answers[1]}</button>}
+            {answers[2] && <button type="button" onClick= {(event) => logResult(event, answers[2], qIndex)}> {answers[2]}</button>}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+    <button type="button" onClick= {(event) => calculateClass()}> Submit</button>
+    </div>
+    }
+
   </>
   )
 }
