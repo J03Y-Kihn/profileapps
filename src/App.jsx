@@ -13,7 +13,6 @@ function App() {
   const questionnaireVisibleChange = (val) =>{setQuestionnaireVisible(val)};
 
   const questionnaireChange = () =>{
-
     questionnaireVisibleChange(true)
     statRecVisibleChange(false)
   };
@@ -23,19 +22,24 @@ function App() {
     statRecVisibleChange(true)
   };
 
+  let extraSpace = "     "
   return (
     <>    
   <h1 className="h1">D&D Class Recommendation Tool</h1>
 
+  <div className='header'>
+    <p>Built by Joseph Kihn using JavaScript, ReactJS, HTML, and CSS. It is hosted used AWS Amplify with all source code saved on GitHub. </p>
+  {<a target='_blank' href='https://linkedin.com/in/josephkihn' rel="noopener noreferrer">My LinkedIn</a>}{extraSpace}
+  {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
+  </div>
+  <br></br>
   <button type="button" onClick= {(event) => questionnaireChange()}>Questionnaire</button>
   <button type="button" onClick= {(event) => statRecChange()}>Stat Rec</button>
   {questionnaireIsVisible && <QuestionnaireTab/>}  
   {statRecIsVisible && <StatTab/>}
-  <div>
-    <p>Built by Joseph Kihn using JavaScript, ReactJS, HTML, and CSS. It is hosted used AWS Amplify with all source code saved on GitHub. </p>
-  {<a target='_blank' href='https://linkedin.com/in/josephkihn' rel="noopener noreferrer">My LinkedIn</a>}<br></br>
-  {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
-  </div>
+  <br></br>
+  <div>{extraSpace}</div>
+  
 </>
 
   )
@@ -80,10 +84,10 @@ function StatTab(){
   const [remainingPlaces, setRemainingPlaces] = useState('');
   const RemainingPlacesChange = (e) => {setRemainingPlaces(e);};
 
-  const [secondPlaceisVisible, setSecondPlaceVisible] = useState(false);
-  const secondVisibleChange = (val) =>{setSecondPlaceVisible(val)};
   const [firstPlaceisVisible, setFirstPlaceVisible] = useState(false);
   const firstVisibleChange = (val) =>{setFirstPlaceVisible(val)};
+  const [secondPlaceisVisible, setSecondPlaceVisible] = useState(false);
+  const secondVisibleChange = (val) =>{setSecondPlaceVisible(val)};
   const [thirdPlaceisVisible, setThirdVisible] = useState(false);
   const thirdVisibleChange = (val) =>{setThirdVisible(val)};
   const [remainingPlacesisVisible, setRemainingVisible] = useState(false);
@@ -199,7 +203,6 @@ function StatTab(){
     }
     if(!isVisible)
       visibleChange(true)
-    console.log(output)
   };
   return(
   <>
@@ -207,7 +210,7 @@ function StatTab(){
     Input your six stats (between 0-20 for each) and choose any classes you do not
     want factored into the calculation.
   </p>
-  <div>
+  <div> {/*List of statistics with input boxes to type numbers into (must be between 1-20) */}
     <ul className= "stats-list">
       {Stats.map(({name, stat}, index) =>{
         return (
@@ -220,6 +223,7 @@ function StatTab(){
         );
       })}
     </ul>
+    {/*List of checkboxes with class names for the program to optionally remove from the calculation */}
     <ul className= "ignore-list">
       {ignoreClasses.map(({name, ignore}, index) =>{
         return (
@@ -231,7 +235,7 @@ function StatTab(){
         );
       })}
     </ul>
-    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)} class="stat-submit">  Submit  </button>
+    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)} className="stat-submit">  Submit  </button>
   </div>
   {/* Outputs results after the submit button is Clicked */}
   {<div>
@@ -266,13 +270,12 @@ function StatTab(){
 }
 
 function QuestionnaireTab(){
-  //variable that displays and holds all character stat information (Strength, Dexterity, etc.)
+  //variable that displays and holds all question information
   const [Questions, setQuestionsValue] = useState(questionNames);
 
+  //variable that holds the information of which buttons were most recently clicked
   const [result, setResultValue] = useState([0,0,0])
-  const logResult = (questionChoice, questionIndex) => {
-    console.log(questionChoice)
-    console.log(questionIndex)
+  const logResult = (event, questionChoice, questionIndex) => {
 
     const nextResult = result.map((choice, i) => {
       if(i === questionIndex){
@@ -283,33 +286,95 @@ function QuestionnaireTab(){
       }
     });
     setResultValue(nextResult)
-    
   };
 
+  //variable that determines if the output should be visible
+  const [outputIsVisible, setOutputIsVisible] = useState(false);
+  const outputIsVisibleChange = (val) =>{setOutputIsVisible(val)};
+
+  //variable that holds the output string
+  const [outputResults, setOutputResults] = useState('');
+  const OutputResultsChange = (e) => {setOutputResults(e);};
+
+
+  //determine which class would be best based off the answers to the questions (data in the result variable)
   const calculateClass = () => {
 
-    //not saving correctly
-    console.log(result)
-
-
     //Calculate the class
+    if(!checkBestFit()){
+      if(!checkAltFit()){
+        let errorOutput = `Make sure you clicked on an answer for each question!`
+        OutputResultsChange(errorOutput)
+        outputIsVisibleChange(true)
+      }
+    }
+    console.log(outputResults)
+  };
 
+  //check the best fit values first (the results that you would expect for the class)
+  const checkBestFit = () => {
+    let bestfit = []
+    let tempOutput = ``
+
+    //loop through the list of classes to find any matches
     for(let counter =0; counter < classNames.length; counter++){
-      console.log(classNames[counter].bestfit);
-      if(classNames[counter].bestfit == result){
-        console.log("THIS IS THE BEST")
+      if(classNames[counter].bestfit[0] == result[0] && classNames[counter].bestfit[1] == result[1] && classNames[counter].bestfit[2] == result[2]){
+        bestfit.push(classNames[counter].name)
       }
     }
 
+    //if multiple classes fit the archetype, randomly choose one to output, otherwise output the singular match
+    if(bestfit.length != 0){
+      let outputClass = 0
+      if(bestfit.length > 1){
+        outputClass = Math.floor(Math.random() * (bestfit.length))
+      }
+      tempOutput += `${bestfit[outputClass]} is the best class for you!`
+      OutputResultsChange(tempOutput)
+      outputIsVisibleChange(true)
+      return true
+    }
+    return false
   };
 
+  //check the class alternatives (the results that can work for some of the classes)
+  const checkAltFit = () => {
+    let altfit = []
+    let tempOutput = ``
 
+    //loop through the list of classes to find any matches
+    for(let counter =0; counter < classNames.length; counter++){
+      
+      if(classNames[counter].name != "Barbarian" && classNames[counter].name != "Fighter"){
+        for(let subcounter =0; subcounter < classNames[counter].altfit.length; subcounter++){
+          if(classNames[counter].altfit[subcounter][0] == result[0] && classNames[counter].altfit[subcounter][1] == result[1] && classNames[counter].altfit[subcounter][2] == result[2]){
+            altfit.push(classNames[counter].name)
+          }
+        }
+      }
+    }
+    
+    //if multiple classes fit the archetype, randomly choose one to output, otherwise output the singular match
+    if(altfit.length > 0){
+      let outputClass = 0
+      if(altfit.length > 1){
+        outputClass = Math.floor(Math.random() * (altfit.length)) 
+      }
+      tempOutput += `${altfit[outputClass]} is a good class for you!`
+      OutputResultsChange(tempOutput)
+      outputIsVisibleChange(true)
+      return true
+    }
+    return false
+  };
+
+  let extraSpace = "     "
   return(
   <>
-    <p>Please complete the following questionnaire to determine which class is the best for you!</p>
+    <p>Please press one button for each of the three questions to determine which class is the best for you!</p>
 
     {
-    <div>
+    <div> {/*List of questions with buttons to answer the question */}
     <ul className= "stats-list">
       {Questions.map(({question, answers, qIndex}, index) =>{
         return (
@@ -317,9 +382,9 @@ function QuestionnaireTab(){
             <div>
             {question}
             <br></br>
-            {answers[0] && <button type="button" onClick= {(event) => logResult(event, answers[0], qIndex)}> {answers[0]}</button>}
-            {answers[1] && <button type="button" onClick= {(event) => logResult(event, answers[1], qIndex)}> {answers[1]}</button>}
-            {answers[2] && <button type="button" onClick= {(event) => logResult(event, answers[2], qIndex)}> {answers[2]}</button>}
+            {answers[0] && <button type="button" onClick= {(event) => logResult(event, 1, qIndex)}> {answers[0]}</button>} {extraSpace}
+            {answers[1] && <button type="button" onClick= {(event) => logResult(event, 2, qIndex)}> {answers[1]}</button>} {extraSpace}
+            {answers[2] && <button type="button" onClick= {(event) => logResult(event, 3, qIndex)}> {answers[2]}</button>}
             </div>
           </li>
         );
@@ -327,6 +392,12 @@ function QuestionnaireTab(){
     </ul>
     <button type="button" onClick= {(event) => calculateClass()}> Submit</button>
     </div>
+    }
+    {/* Outputs results after the submit button is Clicked */}
+    {
+      <div>
+        {outputIsVisible && outputResults}
+      </div>
     }
 
   </>

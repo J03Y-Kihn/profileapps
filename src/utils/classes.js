@@ -13,7 +13,7 @@ export const classNames = [
         stat1: "Strength", 
         stat2: "Constitution",
         bestfit: [1,1,3],
-        altfit: [[]]
+        altfit: []
     },
     {
         name: "Bard",
