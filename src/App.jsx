@@ -33,8 +33,8 @@ function App() {
   {<a target='_blank' href='https://github.com/J03Y-Kihn' rel="noopener noreferrer">My GitHub</a>}
   </div>
   <br></br>
-  <button type="button" onClick= {(event) => questionnaireChange()}>Questionnaire</button>
-  <button type="button" onClick= {(event) => statRecChange()}>Stat Rec</button>
+  <button type="button" onClick= {(event) => questionnaireChange()}>Archetype Questions</button>
+  <button type="button" onClick= {(event) => statRecChange()}>Input Character Stats</button>
   {questionnaireIsVisible && <QuestionnaireTab/>}  
   {statRecIsVisible && <StatTab/>}
   <br></br>
@@ -235,7 +235,7 @@ function StatTab(){
         );
       })}
     </ul>
-    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)} className="stat-submit">  Submit  </button>
+    <button type="button" onClick= {(event) => calculateClass(Stats, ignoreClasses)} className="submit">  Submit  </button>
   </div>
   {/* Outputs results after the submit button is Clicked */}
   {<div>
@@ -390,7 +390,7 @@ function QuestionnaireTab(){
         );
       })}
     </ul>
-    <button type="button" onClick= {(event) => calculateClass()}> Submit</button>
+    <button type="button" onClick= {(event) => calculateClass()} className='submit'> Submit</button>
     </div>
     }
     {/* Outputs results after the submit button is Clicked */}
